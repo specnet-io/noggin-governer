@@ -1,0 +1,7 @@
+{# noggin-governer: "Request a group" button for signed-in users. Copy into one of noggin's
+   TEMPLATES_CUSTOM_DIRECTORIES. The URL comes from GOVERNER_PUBLIC_URL in noggin's config. #}
+{% if current_user and config.get("GOVERNER_PUBLIC_URL") %}
+<div class="container d-flex justify-content-end gap-2 mt-2">
+  <a class="btn btn-sm btn-outline-primary" href="{{ config['GOVERNER_PUBLIC_URL'] }}/request-group">{{ _("Request a new group") }}</a>
+</div>
+{% endif %}

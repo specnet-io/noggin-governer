@@ -1,0 +1,36 @@
+{{define "layout"}}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} · Account manager</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="top">
+  <span class="brand">Account manager</span>
+  {{if .User}}
+  <nav>
+    {{if .Approver}}
+    <a href="/users" {{if eq .Tab "users"}}class="on"{{end}}>User requests</a>
+    <a href="/group-requests" {{if eq .Tab "group-requests"}}class="on"{{end}}>Group requests</a>
+    <a href="/groups" {{if eq .Tab "groups"}}class="on"{{end}}>Group management</a>
+    <a href="/blocklist" {{if eq .Tab "blocklist"}}class="on"{{end}}>Blocklist</a>
+    <a href="/activity" {{if eq .Tab "activity"}}class="on"{{end}}>Activity</a>
+    {{end}}
+    <a href="/request-group" {{if eq .Tab "request"}}class="on"{{end}}>Request a group</a>
+  </nav>
+  <form method="post" action="/logout" class="who">
+    <input type="hidden" name="csrf" value="{{.CSRF}}">
+    <span>{{.User}}</span> <button class="link">Sign out</button>
+  </form>
+  {{end}}
+</header>
+<main>
+  {{range .Warnings}}<p class="banner warn">{{.}}</p>{{end}}
+  {{if .Flash}}<p class="banner {{if eq .FlashKind "ok"}}ok{{else}}error{{end}}">{{.Flash}}</p>{{end}}
+  {{template "content" .}}
+</main>
+<footer>noggin-governer {{.Version}}</footer>
+</body>
+</html>{{end}}

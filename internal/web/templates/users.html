@@ -1,0 +1,59 @@
+{{define "content"}}
+<h1>User requests</h1>
+<p class="muted">New registrations wait here until approved. Approving lets the person confirm their email and set a password; denying deletes the request.</p>
+
+<h2>Waiting for approval <span class="count">{{len .Data.Pending}}</span></h2>
+{{if .Data.Pending}}
+<table>
+<thead><tr><th>User</th><th>Email</th><th>Requested</th><th>From</th><th></th></tr></thead>
+<tbody>
+{{range .Data.Pending}}
+<tr>
+  <td><strong>{{.UID}}</strong><br><span class="muted">{{.Name}}</span></td>
+  <td>{{.Mail}}{{if .Blocked}}<br><span class="tag bad">matches blocklist: {{.Blocked}}</span>{{end}}</td>
+  <td>{{if .Received.IsZero}}{{ts .Created}}{{else}}{{ts .Received}}{{end}}</td>
+  <td>{{if .IP}}{{.IP}}{{else}}<span class="muted">—</span>{{end}}</td>
+  <td class="actions">
+    <form method="post" action="/users/{{.UID}}/approve"><input type="hidden" name="csrf" value="{{$.CSRF}}"><button class="good">Approve</button></form>
+    <form method="post" action="/users/{{.UID}}/deny" class="inline">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}">
+      <select name="block" aria-label="Also block">
+        <option value="">Deny only</option>
+        <option value="email">Deny + block address</option>
+        <option value="domain">Deny + block domain</option>
+      </select>
+      <button class="bad">Deny</button>
+    </form>
+  </td>
+</tr>
+{{end}}
+</tbody>
+</table>
+{{else}}<p class="empty">Nothing waiting.</p>{{end}}
+
+<h2>Approved, waiting for email confirmation <span class="count">{{len .Data.Approved}}</span></h2>
+{{if .Data.Approved}}
+<table>
+<thead><tr><th>User</th><th>Email</th><th>Requested</th><th></th></tr></thead>
+<tbody>
+{{range .Data.Approved}}
+<tr><td>{{.UID}}</td><td>{{.Mail}}</td><td>{{ts .Created}}</td>
+<td class="actions"><form method="post" action="/users/{{.UID}}/deny"><input type="hidden" name="csrf" value="{{$.CSRF}}"><button class="bad">Delete</button></form></td></tr>
+{{end}}
+</tbody>
+</table>
+{{else}}<p class="empty">None.</p>{{end}}
+
+{{if .Data.Denied}}
+<h2>Marked as spam in noggin <span class="count">{{len .Data.Denied}}</span></h2>
+<table>
+<thead><tr><th>User</th><th>Email</th><th></th></tr></thead>
+<tbody>
+{{range .Data.Denied}}
+<tr><td>{{.UID}}</td><td>{{.Mail}}</td>
+<td class="actions"><form method="post" action="/users/{{.UID}}/deny"><input type="hidden" name="csrf" value="{{$.CSRF}}"><button class="bad">Delete</button></form></td></tr>
+{{end}}
+</tbody>
+</table>
+{{end}}
+{{end}}

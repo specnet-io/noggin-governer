@@ -1,0 +1,12 @@
+{{define "content"}}
+<section class="narrow">
+  <h1>Sign in</h1>
+  <p class="muted">Use your account username and password. If you use a one-time code, type it straight after your password.</p>
+  <form method="post" action="/login" class="stack">
+    <input type="hidden" name="next" value="{{.Data.Next}}">
+    <label>Username <input name="username" autocomplete="username" required value="{{.Data.Username}}" autofocus></label>
+    <label>Password <input name="password" type="password" autocomplete="current-password" required></label>
+    <button>Sign in</button>
+  </form>
+</section>
+{{end}}

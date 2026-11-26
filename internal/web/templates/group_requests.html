@@ -1,0 +1,42 @@
+{{define "content"}}
+<h1>Group requests</h1>
+<p class="muted">Approving creates a noggin-visible group, makes the requester its owner (with <code>{{.Data.ManagerGroup}}</code> as co-manager) and adds it to <code>{{.Data.Container}}</code>.</p>
+
+<h2>Waiting <span class="count">{{len .Data.Pending}}</span></h2>
+{{if .Data.Pending}}
+<table>
+<thead><tr><th>#</th><th>Group</th><th>Requested by</th><th>Why</th><th></th></tr></thead>
+<tbody>
+{{range .Data.Pending}}
+<tr>
+  <td>{{.ID}}</td>
+  <td><strong>{{.Name}}</strong><br><span class="muted">{{.Description}}</span>
+    {{if eq (print .Status) "failed"}}<br><span class="tag bad">last attempt failed: {{.Note}}</span>{{end}}</td>
+  <td>{{.Requester}}<br><span class="muted">{{ts .Created}}</span></td>
+  <td class="why">{{.Justification}}</td>
+  <td class="actions">
+    <form method="post" action="/group-requests/{{.ID}}/approve"><input type="hidden" name="csrf" value="{{$.CSRF}}"><button class="good">{{if eq (print .Status) "failed"}}Retry{{else}}Approve{{end}}</button></form>
+    <form method="post" action="/group-requests/{{.ID}}/deny" class="inline">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}">
+      <input name="note" placeholder="Reason (emailed)" maxlength="500">
+      <button class="bad">Deny</button>
+    </form>
+  </td>
+</tr>
+{{end}}
+</tbody>
+</table>
+{{else}}<p class="empty">Nothing waiting.</p>{{end}}
+
+<h2>Recent decisions</h2>
+{{if .Data.Recent}}
+<table>
+<thead><tr><th>#</th><th>Group</th><th>Requester</th><th>Decision</th><th>By</th><th>Note</th></tr></thead>
+<tbody>
+{{range .Data.Recent}}
+<tr><td>{{.ID}}</td><td>{{.Name}}</td><td>{{.Requester}}</td><td><span class="tag {{.Status}}">{{.Status}}</span> <span class="muted">{{ts .DecidedAt}}</span></td><td>{{.DecidedBy}}</td><td>{{.Note}}</td></tr>
+{{end}}
+</tbody>
+</table>
+{{else}}<p class="empty">None yet.</p>{{end}}
+{{end}}

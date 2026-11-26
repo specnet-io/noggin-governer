@@ -1,0 +1,13 @@
+{{define "content"}}
+<h1>Activity</h1>
+{{if .Data.Events}}
+<table>
+<thead><tr><th>When</th><th>Who</th><th>What</th><th>Target</th><th>Detail</th></tr></thead>
+<tbody>
+{{range .Data.Events}}
+<tr><td class="nowrap">{{ts .Time}}</td><td>{{.Actor}}</td><td>{{.Action}}</td><td>{{.Target}}</td><td>{{.Detail}}</td></tr>
+{{end}}
+</tbody>
+</table>
+{{else}}<p class="empty">No activity yet.</p>{{end}}
+{{end}}

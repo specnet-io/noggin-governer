@@ -1,0 +1,26 @@
+{{define "content"}}
+<h1>Request a group</h1>
+<p class="muted">If it's approved, the group is created in the directory and you manage its members from noggin.</p>
+<form method="post" action="/request-group" class="stack narrow">
+  <input type="hidden" name="csrf" value="{{.CSRF}}">
+  <label>Group name <input name="name" required maxlength="64" placeholder="e.g. web-team">
+    <small>Lowercase letters, digits, <code>-</code> <code>_</code> <code>.</code>; 2–64 characters.</small></label>
+  <label>Description <input name="description" required maxlength="200" placeholder="Shown on the group's page"></label>
+  <label>Why do you need it? <textarea name="justification" rows="4" maxlength="2000"></textarea></label>
+  <button>Send request</button>
+</form>
+
+<h2>Your requests</h2>
+{{if .Data.Mine}}
+<table>
+<thead><tr><th>#</th><th>Group</th><th>Requested</th><th>Status</th><th>Note</th></tr></thead>
+<tbody>
+{{range .Data.Mine}}
+<tr><td>{{.ID}}</td><td>{{.Name}}</td><td>{{ts .Created}}</td>
+<td><span class="tag {{.Status}}">{{if eq (print .Status) "failed"}}pending{{else}}{{.Status}}{{end}}</span></td>
+<td>{{if eq (print .Status) "denied"}}{{.Note}}{{end}}</td></tr>
+{{end}}
+</tbody>
+</table>
+{{else}}<p class="empty">You haven't requested any groups.</p>{{end}}
+{{end}}

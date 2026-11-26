@@ -1,0 +1,19 @@
+{{define "content"}}
+<h1>Blocklist</h1>
+<p class="muted">Registrations from these addresses or domains are denied automatically. A domain also covers its subdomains.</p>
+<form method="post" action="/blocklist/add" class="inline">
+  <input type="hidden" name="csrf" value="{{.CSRF}}">
+  <input name="entry" placeholder="spammer@example.com or example.com" required>
+  <button>Block</button>
+</form>
+{{if .Data.Entries}}
+<table>
+<thead><tr><th>Entry</th><th></th></tr></thead>
+<tbody>
+{{range .Data.Entries}}
+<tr><td>{{.}}</td><td class="actions"><form method="post" action="/blocklist/remove"><input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="entry" value="{{.}}"><button class="link">Remove</button></form></td></tr>
+{{end}}
+</tbody>
+</table>
+{{else}}<p class="empty">Nothing blocked.</p>{{end}}
+{{end}}

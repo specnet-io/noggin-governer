@@ -1,0 +1,40 @@
+{{define "content"}}
+<h1>Group management</h1>
+<p class="muted">Groups created here (members of <code>{{.Data.Container}}</code>). Owners manage membership in noggin; <code>{{.Data.ManagerGroup}}</code> co-manages every group.</p>
+{{if .Data.Missing}}<p class="empty">The <code>{{.Data.Container}}</code> group doesn't exist yet. It's created with the first approved group request.</p>
+{{else if not .Data.Groups}}<p class="empty">No managed groups yet.</p>
+{{else}}
+{{range .Data.Groups}}
+<article class="card">
+  <header>
+    <h2>{{.Name}}</h2>
+    <span class="muted">{{.Description}}</span>
+  </header>
+  <dl>
+    <dt>Owner</dt><dd>{{if .ManagerUsers}}{{join .ManagerUsers ", "}}{{else}}<span class="tag bad">none</span>{{end}}</dd>
+    <dt>Co-managers</dt><dd>{{join .ManagerGroups ", "}}</dd>
+    <dt>Members</dt><dd>{{len .MemberUsers}} user(s){{if .MemberGroups}}, groups: {{join .MemberGroups ", "}}{{end}}</dd>
+    {{if .GID}}<dt>GID</dt><dd>{{.GID}}</dd>{{end}}
+    {{if not .FAS}}<dt>noggin</dt><dd><span class="tag bad">not FAS-enabled, hidden in noggin</span></dd>{{end}}
+  </dl>
+  <div class="ops">
+    <form method="post" action="/groups/{{.Name}}/owner" class="inline">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}">
+      <input name="owner" placeholder="new owner username" required>
+      <button>Change owner</button>
+    </form>
+    <form method="post" action="/groups/{{.Name}}/rename" class="inline">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}">
+      <input name="new_name" placeholder="new name" required>
+      <button>Rename</button>
+    </form>
+    <form method="post" action="/groups/{{.Name}}/delete" class="inline">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}">
+      <input name="confirm" placeholder="type {{.Name}} to confirm" required>
+      <button class="bad">Delete group</button>
+    </form>
+  </div>
+</article>
+{{end}}
+{{end}}
+{{end}}
