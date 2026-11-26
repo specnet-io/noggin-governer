@@ -47,7 +47,7 @@ jobs:
             echo "::error::release from main only (got $GITHUB_REF)"; exit 1
           fi
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Test
