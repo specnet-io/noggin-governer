@@ -1,5 +1,5 @@
 # Static Go binary on scratch: ~10 MB image, no shell, runs as an unprivileged user.
-FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.26.5-alpine3.23 AS build
+FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.27.4-alpine3.23 AS build
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 ARG VERSION=dev
